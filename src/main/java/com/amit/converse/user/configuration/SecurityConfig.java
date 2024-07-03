@@ -1,8 +1,10 @@
 package com.amit.converse.user.configuration;
 
+import com.amit.converse.user.service.ChatServiceImpl;
 import lombok.RequiredArgsConstructor;
 import net.devh.boot.grpc.server.security.authentication.BasicGrpcAuthenticationReader;
 import net.devh.boot.grpc.server.security.authentication.GrpcAuthenticationReader;
+import net.devh.boot.grpc.server.serverfactory.GrpcServerConfigurer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +21,11 @@ public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
     private final JwtAuthenticationFilter jwtAuthFilter;
+
+    @Bean
+    public GrpcServerConfigurer grpcServerConfigurer() {
+        return serverBuilder -> serverBuilder.addService(new ChatServiceImpl());
+    }
 
     @Bean
     public GrpcAuthenticationReader grpcAuthenticationReader(){
