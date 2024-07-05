@@ -22,7 +22,7 @@ public class ChatServiceImpl extends ChatServiceGrpc.ChatServiceImplBase {
                         .setId("1")
                         .setSenderId("user1")
                         .setReceiverId("user2")
-                        .setContent("Hello")
+                        .setContent("Wow")
                         .setTimestamp(System.currentTimeMillis())
                         .build()
                 ).build();
