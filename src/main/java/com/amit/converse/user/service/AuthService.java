@@ -3,18 +3,21 @@ package com.amit.converse.user.service;
 import com.amit.converse.user.dto.LoginRequest;
 import com.amit.converse.user.dto.ResponseDto;
 import com.amit.converse.user.dto.SignUpRequest;
+import com.amit.converse.user.dto.UserEventDTO;
 import com.amit.converse.user.exceptions.ConverseUserNotFoundException;
 import com.amit.converse.user.exceptions.converseException;
 import com.amit.converse.user.model.User;
 import com.amit.converse.user.model.VerificationToken;
 import com.amit.converse.user.repository.UserRepository;
 import com.amit.converse.user.repository.VerificationTokenRepository;
+import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -38,6 +41,8 @@ public class AuthService {
     private final VerificationTokenRepository verificationTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
+    private KafkaTemplate<String, String> kafkaTemplate;
+    private static final String TOPIC = "user-events";
 
     public ResponseEntity<String> signup(SignUpRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -50,7 +55,7 @@ public class AuthService {
         user.setCreationDate(Instant.now());
         user.setVerified(false);
 
-        userRepository.save(user);
+        User savedUser = userRepository.save(user);
         String token = generateVerificationToken(user);
         //Use the below config along with google SMTP config
 //        NotificationEmail notificationEmail= new NotificationEmail("Reddit: Please Activate your Account", user.getEmail(), "Thank you for signing up to Reddit /n"+
@@ -58,6 +63,9 @@ public class AuthService {
 //                appConfig.getUrl()+"auth/activateAccount/"+token);
 //        mailService.sendMail(notificationEmail);
         activateAccount(token);
+        UserEventDTO userEventDTO = UserEventDTO.builder().username(savedUser.getUsername()).userId(savedUser.getUserId().toString()).build();
+        String userEvent = new Gson().toJson(userEventDTO);
+        kafkaTemplate.send(TOPIC, userEvent);
         return new ResponseEntity<>("User Registration Successful", HttpStatus.OK);
     }
 
