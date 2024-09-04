@@ -5,15 +5,13 @@ import com.amit.converse.user.dto.ResponseDto;
 import com.amit.converse.user.dto.SignUpRequest;
 import com.amit.converse.user.dto.UserEventDTO;
 import com.amit.converse.user.exceptions.ConverseUserNotFoundException;
-import com.amit.converse.user.exceptions.converseException;
+import com.amit.converse.user.exceptions.ConverseException;
 import com.amit.converse.user.model.User;
 import com.amit.converse.user.model.VerificationToken;
 import com.amit.converse.user.repository.UserRepository;
 import com.amit.converse.user.repository.VerificationTokenRepository;
 import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -77,8 +75,8 @@ public class AuthService {
             user.ifPresentOrElse((UserToVerify) -> {
                 UserToVerify.setVerified(true);
                 userRepository.save(UserToVerify);
-            },() -> {throw new converseException("No such account found. Please signup to register your account");});
-        }, () -> { throw new converseException("Invalid token"); });
+            },() -> {throw new ConverseException("No such account found. Please signup to register your account");});
+        }, () -> { throw new ConverseException("Invalid token"); });
     }
 
     private String generateVerificationToken(User user) {

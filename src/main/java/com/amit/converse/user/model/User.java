@@ -27,6 +27,8 @@ public class User implements UserDetails {
     @NotBlank
     private String username;
 
+    private String about;
+
 //    @NotBlank(message = "Email is required")
     private String email;
 

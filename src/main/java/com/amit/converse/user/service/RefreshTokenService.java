@@ -1,6 +1,6 @@
 package com.amit.converse.user.service;
 
-import com.amit.converse.user.exceptions.converseException;
+import com.amit.converse.user.exceptions.ConverseException;
 import com.amit.converse.user.model.RefreshToken;
 import com.amit.converse.user.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class RefreshTokenService {
 
     public void validate(String refreshToken){
         refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new converseException("Invalid refresh token! Please try logging in."));
+                .orElseThrow(() -> new ConverseException("Invalid refresh token! Please try logging in."));
     }
 
     public void deleteRefreshToken(String refreshToken) {
