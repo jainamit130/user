@@ -61,7 +61,7 @@ public class AuthService {
 //                appConfig.getUrl()+"auth/activateAccount/"+token);
 //        mailService.sendMail(notificationEmail);
         activateAccount(token);
-        UserEventDTO userEventDTO = UserEventDTO.builder().username(savedUser.getUsername()).userId(savedUser.getUserId().toString()).build();
+        UserEventDTO userEventDTO = UserEventDTO.builder().username(savedUser.getUsername()).userId(savedUser.getUserId().toString()).creationDate(savedUser.getCreationDate().toString()).build();
         String userEvent = new Gson().toJson(userEventDTO);
         kafkaTemplate.send(TOPIC, userEvent);
         return new ResponseEntity<>("User Registration Successful", HttpStatus.OK);
