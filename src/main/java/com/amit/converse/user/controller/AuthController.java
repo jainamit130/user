@@ -1,6 +1,7 @@
 package com.amit.converse.user.controller;
 
 import com.amit.converse.user.dto.LoginRequest;
+import com.amit.converse.user.dto.RefreshTokenRequest;
 import com.amit.converse.user.dto.ResponseDto;
 import com.amit.converse.user.dto.SignUpRequest;
 import com.amit.converse.user.service.AuthService;
@@ -30,4 +31,14 @@ public class AuthController {
         return authService.login(loginDto);
     }
 
+    @PostMapping("/refreshToken")
+    public ResponseDto refreshToken(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
+        return authService.refreshToken(refreshTokenRequest);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity logout(@Valid @RequestBody RefreshTokenRequest refreshTokenRequest){
+        authService.logout(refreshTokenRequest);
+        return new ResponseEntity<>("Logged out Successfully!",HttpStatus.OK);
+    }
 }

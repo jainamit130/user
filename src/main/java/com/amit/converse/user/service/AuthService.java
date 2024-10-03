@@ -1,9 +1,6 @@
 package com.amit.converse.user.service;
 
-import com.amit.converse.user.dto.LoginRequest;
-import com.amit.converse.user.dto.ResponseDto;
-import com.amit.converse.user.dto.SignUpRequest;
-import com.amit.converse.user.dto.UserEventDTO;
+import com.amit.converse.user.dto.*;
 import com.amit.converse.user.exceptions.ConverseUserNotFoundException;
 import com.amit.converse.user.exceptions.ConverseException;
 import com.amit.converse.user.model.User;
@@ -109,4 +106,20 @@ public class AuthService {
         return user;
     }
 
+    public ResponseDto refreshToken(RefreshTokenRequest refreshTokenRequest) {
+        refreshTokenService.validate(refreshTokenRequest.getRefreshToken());
+        User user = getUserFromUsername(refreshTokenRequest.getUsername());
+        String token = jwtService.generateToken(user);
+        return ResponseDto.builder()
+                .authenticationToken(token)
+                .username(refreshTokenRequest.getUsername())
+                .userId(user.getUserId())
+                .refreshToken(refreshTokenRequest.getRefreshToken())
+                .expiresAt(jwtService.getExpirationTime())
+                .build();
+    }
+
+    public void logout(RefreshTokenRequest refreshTokenRequest) {
+        refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
+    }
 }
