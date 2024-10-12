@@ -36,6 +36,7 @@ public class AuthService {
     private final VerificationTokenRepository verificationTokenRepository;
     private final AuthenticationManager authenticationManager;
     private final RefreshTokenService refreshTokenService;
+    private final SendUserToChatService sendUserToChatService;
     private KafkaTemplate<String, String> kafkaTemplate;
     private static final String TOPIC = "user-events";
 
@@ -58,9 +59,22 @@ public class AuthService {
 //                appConfig.getUrl()+"auth/activateAccount/"+token);
 //        mailService.sendMail(notificationEmail);
         activateAccount(token);
-        UserEventDTO userEventDTO = UserEventDTO.builder().username(savedUser.getUsername()).userId(savedUser.getUserId().toString()).creationDate(savedUser.getCreationDate().toString()).build();
-        String userEvent = new Gson().toJson(userEventDTO);
-        kafkaTemplate.send(TOPIC, userEvent);
+        UserEventDTO userEventDTO = UserEventDTO.builder().username(savedUser.getUsername()).userId(savedUser.getUserId().toString()).creationDate(savedUser.getCreationDate()).build();
+        boolean success = sendUserToChatService.createUser(userEventDTO);
+
+        if(!success){
+            verificationTokenRepository.deleteByUserUserId(savedUser.getUserId());
+            userRepository.deleteByUserId(savedUser.getUserId());
+        }
+
+//      Publish the event to Google Pub/Sub
+//      pubSubTemplate.publish(TOPIC, new Gson().toJson(userEventDTO));
+
+//      kafka usage
+//      kafkaTemplate.send(TOPIC, userEvent);
+
+//      Grpc request from user to chat microservice
+
         return new ResponseEntity<>("User Registration Successful", HttpStatus.OK);
     }
 

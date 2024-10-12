@@ -19,6 +19,7 @@ public class VerificationToken {
     private String token;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_user_id", referencedColumnName = "userId")
     private User user;
 
     private Instant expirationTime;

@@ -12,5 +12,5 @@ import java.time.Instant;
 public class UserEventDTO {
     private String userId;
     private String username;
-    private String creationDate;
+    private Instant creationDate;
 }
