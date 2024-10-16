@@ -7,12 +7,13 @@ import com.amit.converse.common.UserServiceGrpc;
 import com.amit.converse.user.dto.UserEventDTO;
 import com.google.protobuf.Timestamp;
 import lombok.AllArgsConstructor;
+import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@GrpcService
 @AllArgsConstructor
-public class SendUserToChatService  {
+public class SendUserToChatService extends UserServiceGrpc.UserServiceImplBase {
     private final UserServiceGrpc.UserServiceBlockingStub userServiceStub;
 
     @Transactional

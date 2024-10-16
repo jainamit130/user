@@ -6,7 +6,7 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.3.1</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
     </parent>
     <groupId>com.amit.converse</groupId>
     <artifactId>user</artifactId>
@@ -17,6 +17,14 @@
     <properties>
         <java.version>21</java.version>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/jainamit130/converse-common</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>com.amit.converse</groupId>
